@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spotřeba obalového materiálu — 4PX | Diamond Plus</title>
+<style>
+:root {
+  --brand: #5C2450;
+  --brand-light: #7a3a6c;
+  --brand-dark: #3e1836;
+  --accent: #e6a817;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --bg: #f4f5f7;
+  --card: #ffffff;
+  --text: #1e1e2f;
+  --text-muted: #6b7280;
+  --border: #e5e7eb;
+  --sidebar-w: 260px;
+  --radius: 12px;
+}
+[data-theme="dark"] {
+  --bg: #0f1117;
+  --card: #1a1c25;
+  --text: #e4e4e7;
+  --text-muted: #9ca3af;
+  --border: #2d2f3a;
+  --brand-light: #9b6490;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  zoom: 0.8;
+  min-height: 100vh;
+  display: flex;
+}
+/* SIDEBAR */
+.sidebar {
+  width: var(--sidebar-w);
+  background: linear-gradient(180deg, var(--brand-dark) 0%, var(--brand) 100%);
+  color: #fff;
+  position: fixed;
+  top: 0; left: 0;
+  height: 100vh;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  transition: transform .3s ease;
+  overflow-y: auto;
+}
+.sidebar-logo {
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid rgba(255,255,255,.12);
+}
+.sidebar-logo h2 { font-size: 16px; font-weight: 700; letter-spacing: .5px; }
+.sidebar-logo span { font-size: 11px; opacity: .65; display: block; margin-top: 2px; }
+.sidebar-nav { padding: 16px 0; flex: 1; }
+.sidebar-nav a {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 24px;
+  color: rgba(255,255,255,.75);
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+  transition: all .2s;
+}
+.sidebar-nav a:hover, .sidebar-nav a.active {
+  background: rgba(255,255,255,.08);
+  color: #fff;
+  border-left-color: var(--accent);
+}
+.sidebar-nav a svg { width: 18px; height: 18px; flex-shrink: 0; }
+.sidebar-footer {
+  padding: 18px 24px;
+  border-top: 1px solid rgba(255,255,255,.12);
+  font-size: 11px; opacity: .5;
+}
+/* HAMBURGER */
+.hamburger {
+  display: none;
+  position: fixed;
+  top: 14px; left: 14px;
+  z-index: 200;
+  background: var(--brand);
+  border: none;
+  color: #fff;
+  width: 42px; height: 42px;
+  border-radius: 10px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 12px rgba(0,0,0,.25);
+}
+.hamburger svg { width: 22px; height: 22px; }
+.overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.5);
+  z-index: 90;
+}
+/* MAIN */
+.main {
+  flex: 1;
+  margin-left: var(--sidebar-w);
+  padding: 32px 40px;
+  max-width: 1280px;
+}
+/* HEADER */
+.header {
+  margin-bottom: 32px;
+}
+.header h1 { font-size: 26px; font-weight: 700; color: var(--brand); }
+[data-theme="dark"] .header h1 { color: var(--brand-light); }
+.header .period {
+  font-size: 14px; color: var(--text-muted);
+  margin-top: 4px;
+}
+.header-row { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; }
+.theme-toggle {
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex; align-items: center; gap: 6px;
+}
+/* KPI CARDS */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  margin-bottom: 32px;
+}
+.kpi-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.kpi-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 4px; height: 100%;
+}
+.kpi-card.purple::before { background: var(--brand); }
+.kpi-card.gold::before { background: var(--accent); }
+.kpi-card.red::before { background: var(--danger); }
+.kpi-card.green::before { background: var(--success); }
+.kpi-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .7px; font-weight: 600; }
+.kpi-value { font-size: 32px; font-weight: 800; margin: 6px 0 2px; }
+.kpi-sub { font-size: 12.5px; color: var(--text-muted); }
+/* SECTION */
+.section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-bottom: 24px;
+}
+.section-title {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-title svg { width: 20px; height: 20px; color: var(--brand); }
+[data-theme="dark"] .section-title svg { color: var(--brand-light); }
+/* CHART CONTAINERS */
+.chart-container { width: 100%; overflow-x: auto; }
+.chart-container svg { display: block; margin: 0 auto; }
+/* STACKED BAR CHART */
+.bar-chart { width: 100%; }
+.bar-group text { font-size: 11px; fill: var(--text-muted); }
+.bar-label { font-size: 11px; font-weight: 600; }
+/* LINE CHART */
+.line-chart { width: 100%; }
+/* LEGEND */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 16px;
+  justify-content: center;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+.legend-dot {
+  width: 12px; height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+/* DONUT */
+.donut-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+  flex-wrap: wrap;
+}
+.donut-stats { min-width: 160px; }
+.donut-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13.5px;
+}
+.donut-stat:last-child { border-bottom: none; }
+.donut-stat .dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+.donut-stat-left { display: flex; align-items: center; }
+.donut-stat-right { font-weight: 700; }
+/* CARRIER BARS */
+.carrier-bar-wrapper { margin: 10px 0; }
+.carrier-label { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
+.carrier-bar-track {
+  width: 100%;
+  height: 28px;
+  background: var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.carrier-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width .6s ease;
+  display: flex; align-items: center; padding-left: 10px;
+  color: #fff; font-size: 12px; font-weight: 600;
+}
+/* TABLE */
+.data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13px;
+}
+.data-table thead th {
+  background: var(--brand);
+  color: #fff;
+  padding: 11px 14px;
+  text-align: right;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: .3px;
+  white-space: nowrap;
+}
+.data-table thead th:first-child { text-align: left; border-radius: 8px 0 0 0; }
+.data-table thead th:last-child { border-radius: 0 8px 0 0; }
+.data-table tbody td {
+  padding: 10px 14px;
+  text-align: right;
+  border-bottom: 1px solid var(--border);
+}
+.data-table tbody td:first-child { text-align: left; font-weight: 600; }
+.data-table tbody tr:hover { background: rgba(92,36,80,.04); }
+[data-theme="dark"] .data-table tbody tr:hover { background: rgba(155,100,144,.08); }
+.data-table tbody tr:last-child td { font-weight: 700; background: rgba(92,36,80,.06); }
+[data-theme="dark"] .data-table tbody tr:last-child td { background: rgba(155,100,144,.1); }
+.data-table tfoot td { font-weight: 700; padding: 11px 14px; text-align: right; }
+.data-table tfoot td:first-child { text-align: left; }
+/* WARNING CARDS */
+.warning-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.warning-card {
+  border-radius: 10px;
+  padding: 20px;
+  display: flex; gap: 14px;
+  align-items: flex-start;
+}
+.warning-card.critical { background: #fef2f2; border: 1px solid #fecaca; }
+[data-theme="dark"] .warning-card.critical { background: #2a1515; border-color: #5a2020; }
+.warning-card.caution { background: #fffbeb; border: 1px solid #fde68a; }
+[data-theme="dark"] .warning-card.caution { background: #2a2510; border-color: #5a4a15; }
+.warning-card.ok { background: #f0fdf4; border: 1px solid #bbf7d0; }
+[data-theme="dark"] .warning-card.ok { background: #0f2a18; border-color: #155a2a; }
+.warning-icon { font-size: 28px; flex-shrink: 0; }
+.warning-title { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+.warning-text { font-size: 12.5px; color: var(--text-muted); }
+.progress-bar {
+  width: 100%; height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+.progress-fill { height: 100%; border-radius: 4px; }
+/* TWO-COL */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .hamburger { display: flex; }
+  .overlay.show { display: block; }
+  .main { margin-left: 0; padding: 24px 18px; padding-top: 68px; }
+  .two-col { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .kpi-grid { grid-template-columns: 1fr; }
+  body { zoom: 1; }
+}
+/* PRINT */
+@media print {
+  .sidebar, .hamburger, .overlay, .theme-toggle { display: none !important; }
+  .main { margin-left: 0; padding: 20px; }
+  .section { break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+<!-- HAMBURGER -->
+<button class="hamburger" onclick="toggleSidebar()" aria-label="Menu">
+  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+</button>
+<div class="overlay" onclick="toggleSidebar()"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <h2>DIAMOND PLUS</h2>
+    <span>Království TianDe</span>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="#kpi" class="active">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4"/></svg>
+      Přehled
+    </a>
+    <a href="#consumption">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6m6 0h6m-6 0V9a2 2 0 012-2h2a2 2 0 012 2v10m6 0v-4a2 2 0 00-2-2h-2a2 2 0 00-2 2v4"/></svg>
+      Spotřeba
+    </a>
+    <a href="#stock">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+      Zásoby
+    </a>
+    <a href="#distribution">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10"/></svg>
+      Rozdělení
+    </a>
+    <a href="#carriers">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 17h8M8 17l-2-6h12l-2 6M8 17H6l-2-4h16l-2 4h-2M12 3v4"/></svg>
+      Dopravci
+    </a>
+    <a href="#table">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
+      Data
+    </a>
+    <a href="#forecast">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01M5.07 19H19a2 2 0 001.75-2.96l-6.93-12a2 2 0 00-3.5 0l-6.93 12A2 2 0 005.07 19z"/></svg>
+      Výhled & Varování
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    Report vygenerován 05.04.2026<br>
+    4PX Fulfillment Data
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- HEADER -->
+  <div class="header" id="kpi">
+    <div class="header-row">
+      <div>
+        <h1>Spotřeba obalového materiálu — 4PX</h1>
+        <div class="period">Období: 09.02.2026 – 29.03.2026 &nbsp;|&nbsp; 7 týdnů &nbsp;|&nbsp; Diamond Plus / Království TianDe</div>
+      </div>
+      <button class="theme-toggle" onclick="toggleTheme()">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        Tmavý režim
+      </button>
+    </div>
+  </div>
+
+  <!-- KPI CARDS -->
+  <div class="kpi-grid">
+    <div class="kpi-card purple">
+      <div class="kpi-label">Celkem zásilek</div>
+      <div class="kpi-value">18 635</div>
+      <div class="kpi-sub">za 7 týdnů (únor–březen 2026)</div>
+    </div>
+    <div class="kpi-card gold">
+      <div class="kpi-label">Týdenní průměr</div>
+      <div class="kpi-value">2 662</div>
+      <div class="kpi-sub">zásilek / týden</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-label">Kritická zásoba – M</div>
+      <div class="kpi-value" style="color:var(--danger)">~8 týdnů</div>
+      <div class="kpi-sub">11 725 ks zbývá (spotřeba ~1 348/t)</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Peak týden</div>
+      <div class="kpi-value">3 012</div>
+      <div class="kpi-sub">02.–08.03.2026</div>
+    </div>
+  </div>
+
+  <!-- CONSUMPTION TREND CHART -->
+  <div class="section" id="consumption">
+    <div class="section-title">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6m6 0h6m-6 0V9a2 2 0 012-2h2a2 2 0 012 2v10m6 0v-4a2 2 0 00-2-2h-2a2 2 0 00-2 2v4"/></svg>
+      Týdenní spotřeba dle velikosti
+    </div>
+    <div class="chart-container">
+      <svg id="stackedBar" viewBox="0 0 780 340" class="bar-chart"></svg>
+    </div>
+    <div class="legend" id="barLegend"></div>
+  </div>
+
+  <!-- STOCK LEVEL CHART -->
+  <div class="section" id="stock">
+    <div class="section-title">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+      Vývoj zásob (konec týdne)
+    </div>
+    <div class="chart-container">
+      <svg id="lineChart" viewBox="0 0 780 320" class="line-chart"></svg>
+    </div>
+    <div class="legend" id="lineLegend"></div>
+  </div>
+
+  <!-- TWO COL: DONUT + CARRIERS -->
+  <div class="two-col">
+    <!-- SIZE DISTRIBUTION -->
+    <div class="section" id="distribution">
+      <div class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+        Rozdělení dle velikosti
+      </div>
+      <div class="donut-wrapper">
+        <svg id="donutChart" viewBox="0 0 200 200" width="200" height="200"></svg>
+        <div class="donut-stats" id="donutStats"></div>
+      </div>
+    </div>
+
+    <!-- CARRIER SPLIT -->
+    <div class="section" id="carriers">
+      <div class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 17h8M8 17l-2-6h12l-2 6"/></svg>
+        Rozdělení dle dopravce
+      </div>
+      <div style="margin-top:8px">
+        <div class="carrier-bar-wrapper">
+          <div class="carrier-label"><span>Česká pošta</span><span style="font-weight:700">~77 % (~14 349 ks)</span></div>
+          <div class="carrier-bar-track"><div class="carrier-bar-fill" style="width:77%;background:var(--brand)">77 %</div></div>
+        </div>
+        <div class="carrier-bar-wrapper">
+          <div class="carrier-label"><span>Packeta</span><span style="font-weight:700">~15 % (~2 795 ks)</span></div>
+          <div class="carrier-bar-track"><div class="carrier-bar-fill" style="width:15%;background:var(--accent)">15 %</div></div>
+        </div>
+        <div class="carrier-bar-wrapper">
+          <div class="carrier-label"><span>DPD</span><span style="font-weight:700">~8 % (~1 491 ks)</span></div>
+          <div class="carrier-bar-track"><div class="carrier-bar-fill" style="width:8%;background:#6366f1"></div></div>
+        </div>
+      </div>
+      <div style="margin-top:24px; padding-top:18px; border-top:1px solid var(--border)">
+        <div class="section-title" style="font-size:15px; margin-bottom:14px;">
+          Teritoriální rozdělení CZ / SK
+        </div>
+        <div style="display:flex; gap:14px;">
+          <div style="flex:9; background:var(--brand); border-radius:8px; padding:14px; color:#fff; text-align:center;">
+            <div style="font-size:24px; font-weight:800;">90 %</div>
+            <div style="font-size:12px; opacity:.8;">Česká republika</div>
+            <div style="font-size:11px; opacity:.6;">~16 772 zásilek</div>
+          </div>
+          <div style="flex:1; background:var(--accent); border-radius:8px; padding:14px; color:#fff; text-align:center;">
+            <div style="font-size:24px; font-weight:800;">10 %</div>
+            <div style="font-size:12px; opacity:.85;">Slovensko</div>
+            <div style="font-size:11px; opacity:.65;">~1 864</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DATA TABLE -->
+  <div class="section" id="table">
+    <div class="section-title">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
+      Podrobná data — týdenní spotřeba (ks)
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Velikost</th><th>09–15.02</th><th>16–22.02</th><th>23.02–01.03</th><th>02–08.03</th><th>09–15.03</th><th>16–22.03</th><th>23–29.03</th><th>CELKEM</th><th>Podíl</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>S</td><td>91</td><td>154</td><td>61</td><td>45</td><td>77</td><td>73</td><td>77</td><td>578</td><td>3,1 %</td></tr>
+          <tr><td>M</td><td>1 343</td><td>1 277</td><td>1 159</td><td>1 701</td><td>1 369</td><td>1 140</td><td>1 444</td><td>9 433</td><td>50,6 %</td></tr>
+          <tr><td>L</td><td>858</td><td>987</td><td>779</td><td>936</td><td>1 039</td><td>801</td><td>941</td><td>6 341</td><td>34,0 %</td></tr>
+          <tr><td>XL</td><td>213</td><td>350</td><td>208</td><td>274</td><td>294</td><td>242</td><td>269</td><td>1 850</td><td>9,9 %</td></tr>
+          <tr><td>XXL</td><td>0</td><td>0</td><td>0</td><td>55</td><td>161</td><td>79</td><td>63</td><td>358</td><td>1,9 %</td></tr>
+          <tr><td>OVERSIZE</td><td>19</td><td>27</td><td>25</td><td>1</td><td>1</td><td>1</td><td>1</td><td>75</td><td>0,4 %</td></tr>
+          <tr><td>CELKEM</td><td>2 524</td><td>2 795</td><td>2 232</td><td>3 012</td><td>2 941</td><td>2 336</td><td>2 795</td><td>18 635</td><td>100 %</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- STOCK TABLE -->
+  <div class="section">
+    <div class="section-title">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
+      Stav zásob — konec týdne (ks)
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Velikost</th><th>09–15.02</th><th>16–22.02</th><th>23.02–01.03</th><th>02–08.03</th><th>09–15.03</th><th>16–22.03</th><th>23–29.03</th><th>Pokles</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>S</td><td>20 140</td><td>19 986</td><td>19 925</td><td>19 880</td><td>19 803</td><td>19 720</td><td>19 670</td><td style="color:var(--success)">−470</td></tr>
+          <tr><td>M</td><td>20 000</td><td>18 723</td><td>17 564</td><td>15 863</td><td>14 494</td><td>13 050</td><td>11 725</td><td style="color:var(--danger);font-weight:700">−8 275</td></tr>
+          <tr><td>L</td><td>15 625</td><td>14 638</td><td>13 859</td><td>12 923</td><td>11 884</td><td>11 500</td><td>10 525</td><td style="color:var(--warning);font-weight:700">−5 100</td></tr>
+          <tr><td>XL</td><td>20 250</td><td>19 900</td><td>19 692</td><td>19 418</td><td>19 124</td><td>18 575</td><td>18 125</td><td style="color:var(--success)">−2 125</td></tr>
+          <tr><td>XXL</td><td>0</td><td>0</td><td>0</td><td>3 445</td><td>3 284</td><td>3 240</td><td>3 200</td><td style="color:var(--text-muted)">+3 200*</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="font-size:11.5px;color:var(--text-muted);margin-top:8px;">* XXL bylo naskladněno počátkem března, proto je záporná hodnota od naskladnění −245 ks.</div>
+  </div>
+
+  <!-- FORECAST / WARNINGS -->
+  <div class="section" id="forecast">
+    <div class="section-title">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01M5.07 19H19a2 2 0 001.75-2.96l-6.93-12a2 2 0 00-3.5 0l-6.93 12A2 2 0 005.07 19z"/></svg>
+      Výhled zásob & varování
+    </div>
+    <div class="warning-grid">
+      <!-- M CRITICAL -->
+      <div class="warning-card critical">
+        <div class="warning-icon">🔴</div>
+        <div>
+          <div class="warning-title">M – KRITICKÝ STAV</div>
+          <div class="warning-text">
+            Zásoba: 11 725 ks<br>
+            Průměrná spotřeba: ~1 348 ks/týden<br>
+            <strong>Odhadovaná výdrž: ~8,7 týdnů</strong> (do cca začátek června)<br>
+            Doporučení: Objednat doplnění IHNED.
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:41%;background:var(--danger)"></div></div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">41 % původní zásoby zbývá</div>
+        </div>
+      </div>
+      <!-- L WARNING -->
+      <div class="warning-card caution">
+        <div class="warning-icon">🟡</div>
+        <div>
+          <div class="warning-title">L – ZVÝŠENÁ POZORNOST</div>
+          <div class="warning-text">
+            Zásoba: 10 525 ks<br>
+            Průměrná spotřeba: ~906 ks/týden<br>
+            <strong>Odhadovaná výdrž: ~11,6 týdnů</strong> (do cca polovina června)<br>
+            Doporučení: Naplánovat objednávku do 4 týdnů.
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:67%;background:var(--warning)"></div></div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">67 % původní zásoby zbývá</div>
+        </div>
+      </div>
+      <!-- XL OK -->
+      <div class="warning-card ok">
+        <div class="warning-icon">🟢</div>
+        <div>
+          <div class="warning-title">XL – V POŘÁDKU</div>
+          <div class="warning-text">
+            Zásoba: 18 125 ks<br>
+            Průměrná spotřeba: ~264 ks/týden<br>
+            <strong>Odhadovaná výdrž: ~68 týdnů</strong><br>
+            Stav: Dostatečná zásoba.
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:90%;background:var(--success)"></div></div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">90 % původní zásoby zbývá</div>
+        </div>
+      </div>
+      <!-- S OK -->
+      <div class="warning-card ok">
+        <div class="warning-icon">🟢</div>
+        <div>
+          <div class="warning-title">S – V POŘÁDKU</div>
+          <div class="warning-text">
+            Zásoba: 19 670 ks<br>
+            Průměrná spotřeba: ~83 ks/týden<br>
+            <strong>Odhadovaná výdrž: ~238 týdnů</strong><br>
+            Stav: Nadbytek zásob.
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:98%;background:var(--success)"></div></div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">98 % původní zásoby zbývá</div>
+        </div>
+      </div>
+      <!-- XXL -->
+      <div class="warning-card caution">
+        <div class="warning-icon">🟡</div>
+        <div>
+          <div class="warning-title">XXL – SLEDOVAT</div>
+          <div class="warning-text">
+            Zásoba: 3 200 ks<br>
+            Průměrná spotřeba: ~90 ks/týden (posledních 4 týdnů)<br>
+            <strong>Odhadovaná výdrž: ~36 týdnů</strong><br>
+            Poznámka: Naskladněno v březnu. Monitorovat trend.
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:93%;background:var(--warning)"></div></div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">93 % od naskladnění zbývá</div>
+        </div>
+      </div>
+      <!-- OVERSIZE -->
+      <div class="warning-card ok">
+        <div class="warning-icon">ℹ️</div>
+        <div>
+          <div class="warning-title">OVERSIZE – BEZ DAT</div>
+          <div class="warning-text">
+            Spotřeba: 75 ks za 7 týdnů (~11/t)<br>
+            Stav zásob není sledován v reportech.<br>
+            Doporučení: Ověřit stav u 4PX.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div style="text-align:center;padding:24px 0 12px;font-size:12px;color:var(--text-muted);">
+    Diamond Plus s.r.o. / Království TianDe &nbsp;|&nbsp; 4PX Fulfillment Report &nbsp;|&nbsp; Vygenerováno 05.04.2026
+  </div>
+</div>
+
+<script>
+// Theme
+function toggleTheme() {
+  const d = document.documentElement;
+  d.setAttribute('data-theme', d.getAttribute('data-theme') === 'dark' ? '' : 'dark');
+  drawAll();
+}
+// Sidebar
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.querySelector('.overlay').classList.toggle('show');
+}
+// Data
+const weeks = ['09–15.02','16–22.02','23.02–01.03','02–08.03','09–15.03','16–22.03','23–29.03'];
+const sizes = ['S','M','L','XL','XXL','OVERSIZE'];
+const consumption = [
+  [91,154,61,45,77,73,77],
+  [1343,1277,1159,1701,1369,1140,1444],
+  [858,987,779,936,1039,801,941],
+  [213,350,208,274,294,242,269],
+  [0,0,0,55,161,79,63],
+  [19,27,25,1,1,1,1]
+];
+const totals = [578,9433,6341,1850,358,75];
+const weekTotals = [2524,2795,2232,3012,2941,2336,2795];
+const stockSizes = ['S','M','L','XL','XXL'];
+const stock = [
+  [20140,19986,19925,19880,19803,19720,19670],
+  [20000,18723,17564,15863,14494,13050,11725],
+  [15625,14638,13859,12923,11884,11500,10525],
+  [20250,19900,19692,19418,19124,18575,18125],
+  [0,0,0,3445,3284,3240,3200]
+];
+const colors = ['#22c55e','#5C2450','#e6a817','#6366f1','#ef4444','#9ca3af'];
+const stockColors = ['#22c55e','#5C2450','#e6a817','#6366f1','#ef4444'];
+
+function getTextColor() {
+  return document.documentElement.getAttribute('data-theme') === 'dark' ? '#9ca3af' : '#6b7280';
+}
+function getGridColor() {
+  return document.documentElement.getAttribute('data-theme') === 'dark' ? '#2d2f3a' : '#e5e7eb';
+}
+
+// STACKED BAR CHART
+function drawStackedBar() {
+  const svg = document.getElementById('stackedBar');
+  const W = 780, H = 340, pad = {t:20,r:20,b:50,l:55};
+  const cW = W-pad.l-pad.r, cH = H-pad.t-pad.b;
+  const maxVal = 3200;
+  const barW = cW / weeks.length * 0.55;
+  const gap = cW / weeks.length;
+  let html = '';
+  const tc = getTextColor(), gc = getGridColor();
+  // grid
+  for(let i=0;i<=4;i++){
+    const y = pad.t + cH - (cH*i/4);
+    const v = Math.round(maxVal*i/4);
+    html += `<line x1="${pad.l}" y1="${y}" x2="${W-pad.r}" y2="${y}" stroke="${gc}" stroke-width="1"/>`;
+    html += `<text x="${pad.l-8}" y="${y+4}" text-anchor="end" fill="${tc}" font-size="11">${v.toLocaleString('cs')}</text>`;
+  }
+  // bars
+  weeks.forEach((w,wi)=>{
+    const x = pad.l + wi * gap + gap/2 - barW/2;
+    let cumY = 0;
+    for(let si = sizes.length-1; si>=0; si--){
+      const val = consumption[si][wi];
+      const h = (val / maxVal) * cH;
+      const y = pad.t + cH - cumY - h;
+      html += `<rect x="${x}" y="${y}" width="${barW}" height="${h}" fill="${colors[si]}" rx="2"><title>${sizes[si]}: ${val.toLocaleString('cs')}</title></rect>`;
+      cumY += h;
+    }
+    // total label
+    const totalY = pad.t + cH - (weekTotals[wi]/maxVal)*cH - 8;
+    html += `<text x="${x+barW/2}" y="${totalY}" text-anchor="middle" fill="${tc}" font-size="11" font-weight="700">${weekTotals[wi].toLocaleString('cs')}</text>`;
+    // week label
+    html += `<text x="${x+barW/2}" y="${H-pad.b+20}" text-anchor="middle" fill="${tc}" font-size="10.5">${w}</text>`;
+  });
+  svg.innerHTML = html;
+  // legend
+  const leg = document.getElementById('barLegend');
+  leg.innerHTML = sizes.map((s,i)=>`<div class="legend-item"><div class="legend-dot" style="background:${colors[i]}"></div>${s}</div>`).join('');
+}
+
+// LINE CHART
+function drawLineChart() {
+  const svg = document.getElementById('lineChart');
+  const W = 780, H = 320, pad = {t:20,r:20,b:50,l:60};
+  const cW = W-pad.l-pad.r, cH = H-pad.t-pad.b;
+  const maxVal = 22000;
+  const tc = getTextColor(), gc = getGridColor();
+  let html = '';
+  // grid
+  for(let i=0;i<=4;i++){
+    const y = pad.t + cH - (cH*i/4);
+    const v = Math.round(maxVal*i/4);
+    html += `<line x1="${pad.l}" y1="${y}" x2="${W-pad.r}" y2="${y}" stroke="${gc}" stroke-width="1"/>`;
+    html += `<text x="${pad.l-8}" y="${y+4}" text-anchor="end" fill="${tc}" font-size="11">${(v/1000).toFixed(0)}k</text>`;
+  }
+  // week labels
+  weeks.forEach((w,i)=>{
+    const x = pad.l + (i/(weeks.length-1))*cW;
+    html += `<text x="${x}" y="${H-pad.b+20}" text-anchor="middle" fill="${tc}" font-size="10.5">${w}</text>`;
+  });
+  // lines
+  stockSizes.forEach((s,si)=>{
+    const pts = stock[si].map((v,i)=>{
+      const x = pad.l + (i/(weeks.length-1))*cW;
+      const y = pad.t + cH - (v/maxVal)*cH;
+      return `${x},${y}`;
+    });
+    html += `<polyline points="${pts.join(' ')}" fill="none" stroke="${stockColors[si]}" stroke-width="2.5" stroke-linejoin="round"/>`;
+    stock[si].forEach((v,i)=>{
+      const x = pad.l + (i/(weeks.length-1))*cW;
+      const y = pad.t + cH - (v/maxVal)*cH;
+      html += `<circle cx="${x}" cy="${y}" r="4" fill="${stockColors[si]}" stroke="#fff" stroke-width="1.5"><title>${s}: ${v.toLocaleString('cs')}</title></circle>`;
+    });
+    // end label
+    const lastV = stock[si][6];
+    const lx = pad.l + cW + 4;
+    const ly = pad.t + cH - (lastV/maxVal)*cH + 4;
+    // skip if overlaps
+  });
+  svg.innerHTML = html;
+  const leg = document.getElementById('lineLegend');
+  leg.innerHTML = stockSizes.map((s,i)=>`<div class="legend-item"><div class="legend-dot" style="background:${stockColors[i]}"></div>${s}</div>`).join('');
+}
+
+// DONUT CHART
+function drawDonut() {
+  const svg = document.getElementById('donutChart');
+  const total = 18635;
+  const data = [
+    {label:'S',value:578,color:colors[0]},
+    {label:'M',value:9433,color:colors[1]},
+    {label:'L',value:6341,color:colors[2]},
+    {label:'XL',value:1850,color:colors[3]},
+    {label:'XXL',value:358,color:colors[4]},
+    {label:'OVER',value:75,color:colors[5]}
+  ];
+  const cx=100,cy=100,R=85,r=55;
+  let angle = -Math.PI/2;
+  let paths = '';
+  data.forEach(d=>{
+    const a = (d.value/total)*2*Math.PI;
+    const x1 = cx + R*Math.cos(angle);
+    const y1 = cy + R*Math.sin(angle);
+    const x2 = cx + R*Math.cos(angle+a);
+    const y2 = cy + R*Math.sin(angle+a);
+    const x3 = cx + r*Math.cos(angle+a);
+    const y3 = cy + r*Math.sin(angle+a);
+    const x4 = cx + r*Math.cos(angle);
+    const y4 = cy + r*Math.sin(angle);
+    const large = a > Math.PI ? 1 : 0;
+    paths += `<path d="M${x1},${y1} A${R},${R} 0 ${large},1 ${x2},${y2} L${x3},${y3} A${r},${r} 0 ${large},0 ${x4},${y4} Z" fill="${d.color}"><title>${d.label}: ${d.value.toLocaleString('cs')} (${(d.value/total*100).toFixed(1)} %)</title></path>`;
+    angle += a;
+  });
+  paths += `<text x="${cx}" y="${cy-6}" text-anchor="middle" font-size="20" font-weight="800" fill="${getTextColor()}">${(total/1000).toFixed(1)}k</text>`;
+  paths += `<text x="${cx}" y="${cy+12}" text-anchor="middle" font-size="10" fill="${getTextColor()}">zásilek</text>`;
+  svg.innerHTML = paths;
+  // stats
+  const stats = document.getElementById('donutStats');
+  stats.innerHTML = data.map(d=>`
+    <div class="donut-stat">
+      <div class="donut-stat-left"><div class="dot" style="background:${d.color}"></div>${d.label}</div>
+      <div class="donut-stat-right">${(d.value/total*100).toFixed(1)} %</div>
+    </div>
+  `).join('');
+}
+
+function drawAll(){
+  drawStackedBar();
+  drawLineChart();
+  drawDonut();
+}
+drawAll();
+
+// Active nav on scroll
+const sections = document.querySelectorAll('.section[id], .header[id]');
+const navLinks = document.querySelectorAll('.sidebar-nav a');
+window.addEventListener('scroll',()=>{
+  let current = '';
+  sections.forEach(s=>{
+    if(window.scrollY >= s.offsetTop - 120) current = s.id;
+  });
+  navLinks.forEach(a=>{
+    a.classList.remove('active');
+    if(a.getAttribute('href') === '#'+current) a.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
